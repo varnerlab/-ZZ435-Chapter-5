@@ -203,7 +203,7 @@ multistep retrobiosynthesis pipeline and validated it by reproducing some natura
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Dataset assembly.}
+\subsection{Dataset assembly}
 The backward reaction templates and metabolic reactions were assembled from literature \citep{henry2010discovery, retrorules, duigou2019retrorules} and public databases \citep{kegg, EPFL_ATLAS, hadadi2016atlas}. 
 
 \textbf{Metabolic reaction dataset.} KEGG (Kyoto Encyclopedia of Genes and Genomes) is a computerized resource for understanding high-level functions and utilities of the biological system \citep{kegg, kanehisa1996toward, kanehisa1997database, ogata1999kegg, kanehisa2000kegg, kanehisa2002kegg, kanehisa2004kegg, kanehisa2006genomics, kanehisa2007kegg, kanehisa2010kegg, kanehisa2012kegg, kanehisa2019toward, kanehisa2019new, kanehisa2017kegg, kanehisa2014data, kanehisa2016kegg}
@@ -227,7 +227,7 @@ We also obtained a dataset that was used in Henry et al.\ \citep{henry2010discov
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsection{Baseline model.}
+\subsection{Baseline model}
 We developed a baseline model on top of the Tanimoto similarity metric as elaborated in Section~\ref{sec:SI-PR}.
 Two backward rule sets, RetroPath and BNICE, were applied on product(s) of each positive reaction to generate negative derivatives, and then Tanimoto scores were calculated with each reaction represented as a 1024-bit vector as discussed in Section~\ref{sec:SI-methods-RF}.
 The final ranks of positive reactions were solely based on Tanimoto scores. 
@@ -768,7 +768,7 @@ Overall, we got $113336477$ negative reactions.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Reaction fingerprints.}
+\subsubsection{Reaction fingerprints}
 \label{sec:SI-methods-RF}
 Most of existing machine learning models require input data to be in tensor format \citep{geron2019hands, goodfellow2016deep, francois2017deep}, so our datasets in SMILES and SMARTS had to be vectorized for using machine learning model. 
 As briefly mentioned in Section Manipulation molecules in cheminformatics, molecular fingerprints \citep{todeschini2008handbook}, such as Extended-connectivity fingerprints (ECFPs) \citep{rogers2010extended} that were derived from the Morgan Algorithm \citep{morgan1965generation} and learned fingerprints \citep{duvenaud2015convolutional, kearnes2016molecular},   have been widely used to convert molecules in SMILES into vectors.
@@ -778,7 +778,7 @@ In this work, we used an implementation of ECPFs in RDKit to generate molecular 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-\subsubsection{Deep learning model.}
+\subsubsection{Deep learning model}
 \paragraph{Neural network based one-step pathway ranking model (NN1PR).}
 The dataset had $113336477$ negative examples but only $21848$ positive counterparts, which was highly unbalanced. For a balanced training, we first random shuffled negative examples, and only used top $1564651$ negative examples (30\%) for training. 
 The deep learning model was a feedforward neural network consisting of one hidden dense layer with `relu' as the activation function \citep{goodfellow2016deep} (Fig.~\ref{fig:model_architectures}a). 
