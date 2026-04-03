@@ -1,0 +1,24 @@
+% NN1PR vs Tanimoto performance bar chart (fig:nn1pr_performance)
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    bar width=12pt,
+    width=\textwidth,
+    height=7cm,
+    ylabel={Coverage (\%)},
+    xlabel={Rank},
+    symbolic x coords={1,5,10,30,50,100},
+    xtick=data,
+    ymin=0, ymax=85,
+    legend style={at={(0.05,0.95)}, anchor=north west, font=\small},
+    nodes near coords,
+    every node near coord/.append style={font=\scriptsize},
+    enlarge x limits=0.12,
+    grid=major,
+    grid style={gray!20},
+]
+\addplot[fill=barblue, draw=barblue!80!black] coordinates {(1,41) (5,50) (10,55) (30,63) (50,67) (100,72)};
+\addplot[fill=barorange, draw=barorange!80!black] coordinates {(1,1) (5,2) (10,3) (30,9) (50,14) (100,23)};
+\legend{NN1PR, Tanimoto}
+\end{axis}
+\end{tikzpicture}

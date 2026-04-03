@@ -1,0 +1,49 @@
+% NN1PR architecture schematic (fig:nn1pr_struc)
+\begin{tikzpicture}[node distance=0.6cm]
+% Left side: inputs
+\node[font=\small\bfseries] (title) {Neural Network-based 1-step Pathway Ranking (NN1PR)};
+
+\node[draw, rounded corners, minimum width=2.8cm, minimum height=0.6cm, font=\small, below=0.8cm of title, xshift=-4cm] (target) {Target molecule};
+\node[font=\footnotesize, below=0.3cm of target] (tfp) {ECFP (512-bit)};
+
+\node[draw, rounded corners, minimum width=2.8cm, minimum height=0.6cm, font=\small, below=1.2cm of tfp] (precursor) {Precursor candidate};
+\node[font=\footnotesize, below=0.3cm of precursor] (pfp) {ECFP (512-bit)};
+
+% Neural network box
+\node[draw, rounded corners, minimum width=3cm, minimum height=3.5cm, right=2.5cm of target, yshift=-1.2cm, font=\small\bfseries, label={[font=\small\bfseries]above:Neural Network}] (nnbox) {};
+
+% Neurons - input layer
+\foreach \i in {1,2,3} {
+    \node[neuron] at ($(nnbox.west)+(0.6, 1.2-0.8*\i)$) (in\i) {};
+}
+% Hidden layer
+\foreach \i in {1,2,3,4} {
+    \node[neuron, fill=candidateorange!50] at ($(nnbox.center)+(0, 1.6-0.8*\i)$) (h\i) {};
+}
+% Output neuron
+\node[neuron, fill=candidateorange!70] at ($(nnbox.east)+(-0.6, -0.4)$) (out) {};
+
+% Connections
+\foreach \i in {1,2,3} {
+    \foreach \j in {1,2,3,4} {
+        \draw[gray!50, thin] (in\i) -- (h\j);
+    }
+}
+\foreach \j in {1,2,3,4} {
+    \draw[gray!50, thin] (h\j) -- (out);
+}
+
+% Labels inside NN
+\node[font=\tiny, above=0.1cm of in1] {Input};
+\node[font=\tiny, above=0.1cm of h1] {Hidden};
+\node[font=\tiny, above=0.1cm of out] {Output};
+
+% Arrows from inputs to NN
+\draw[thinnarrow] (tfp.east) -- ($(nnbox.west)+(0,0.4)$);
+\draw[thinnarrow] (pfp.east) -- ($(nnbox.west)+(0,-0.8)$);
+
+% Output box
+\node[draw, rounded corners, minimum width=2.8cm, minimum height=1.8cm, right=1.5cm of nnbox, font=\small, align=center, text width=2.5cm] (output) {\textbf{Output}\\[3pt] A score $\in [0,1]$\\quantifying the\\plausibility of this\\reaction};
+
+\draw[thickarrow={gray!60}, line width=1pt] (nnbox.east) -- (output.west);
+\end{tikzpicture}

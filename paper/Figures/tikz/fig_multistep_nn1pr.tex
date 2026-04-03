@@ -1,0 +1,90 @@
+% Multistep pipeline with NN1PR (fig:multistep_pipeline_nn1pr)
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=0.3cm, >=Stealth]
+% Step 1: Target + backward enumeration
+\node[targetnode, minimum size=12pt] (target) {};
+
+% 1st step candidates (3 orange from target)
+\node[orangenode, minimum size=10pt, above right=0.8cm and 1.2cm of target] (c1a) {};
+\node[orangenode, minimum size=10pt, right=1.2cm of target] (c1b) {};
+\node[orangenode, minimum size=10pt, below right=0.8cm and 1.2cm of target] (c1c) {};
+\draw[thin] (target) -- (c1a);
+\draw[thin] (target) -- (c1b);
+\draw[thin] (target) -- (c1c);
+
+% Green children of c1a
+\node[greennode, minimum size=8pt, above right=0.4cm and 0.6cm of c1a] (g1a1) {};
+\node[greennode, minimum size=8pt, right=0.6cm of c1a] (g1a2) {};
+\node[greennode, minimum size=8pt, below right=0.4cm and 0.6cm of c1a] (g1a3) {};
+\draw[thin, gray] (c1a) -- (g1a1);
+\draw[thin, gray] (c1a) -- (g1a2);
+\draw[thin, gray] (c1a) -- (g1a3);
+
+% Green children of c1c
+\node[greennode, minimum size=8pt, above right=0.4cm and 0.6cm of c1c] (g1c1) {};
+\node[greennode, minimum size=8pt, right=0.6cm of c1c] (g1c2) {};
+\node[greennode, minimum size=8pt, below right=0.4cm and 0.6cm of c1c] (g1c3) {};
+\draw[thin, gray] (c1c) -- (g1c1);
+\draw[thin, gray] (c1c) -- (g1c2);
+\draw[thin, gray] (c1c) -- (g1c3);
+
+% Labels
+\node[font=\scriptsize, align=center, above left=0.1cm and -0.2cm of target] {1\textsuperscript{st} step\\backward\\enumeration};
+
+% NN1PR ranking arrow (step 1)
+\draw[->, thick, >=Stealth] ($(g1a2.east)+(0.3,0)$) -- node[above, font=\scriptsize] {NN1PR ranking} ++(1.8,0);
+
+% Ranked results step 1
+\node[targetnode, minimum size=12pt, right=5.8cm of target] (t2) {};
+\node[orangenode, minimum size=10pt, above right=0.1cm and 0.4cm of t2, label={[font=\scriptsize]right:1}] (r1) {};
+\node[greennode, minimum size=10pt, right=0.4cm of t2, label={[font=\scriptsize]right:3}] (r2) {};
+\node[orangenode, minimum size=10pt, below right=0.1cm and 0.4cm of t2, label={[font=\scriptsize]right:2}] (r3) {};
+\draw[thin] (t2) -- (r1);
+\draw[thin] (t2) -- (r2);
+\draw[thin] (t2) -- (r3);
+\node[font=\scriptsize, below=0.4cm of r3] {Ranked candidates};
+
+% 2nd step label
+\node[font=\scriptsize, align=center, right=1.2cm of r1] {2\textsuperscript{nd} step\\backward\\enumeration\\on high-ranked\\candidates};
+
+% Step 2 expansion (below)
+\node[targetnode, minimum size=12pt, below=2.5cm of target] (t2start) {};
+\node[orangenode, minimum size=10pt, above right=0.3cm and 0.5cm of t2start] (s2c1) {};
+\node[orangenode, minimum size=10pt, below right=0.3cm and 0.5cm of t2start] (s2c2) {};
+\draw[thin, gray] (t2start) -- (s2c1);
+\draw[thin, gray] (t2start) -- (s2c2);
+
+% Children of s2c1
+\node[greennode, minimum size=8pt, above right=0.3cm and 0.5cm of s2c1] (s2g1) {};
+\node[greennode, minimum size=8pt, right=0.5cm of s2c1] (s2g2) {};
+\node[greennode, minimum size=8pt, below right=0.3cm and 0.5cm of s2c1] (s2g3) {};
+\draw[thin, gray] (s2c1) -- (s2g1);
+\draw[thin, gray] (s2c1) -- (s2g2);
+\draw[thin, gray] (s2c1) -- (s2g3);
+
+% Children of s2c2
+\node[greennode, minimum size=8pt, above right=0.3cm and 0.5cm of s2c2] (s2g4) {};
+\node[greennode, minimum size=8pt, right=0.5cm of s2c2] (s2g5) {};
+\node[greennode, minimum size=8pt, below right=0.3cm and 0.5cm of s2c2] (s2g6) {};
+\draw[thin, gray] (s2c2) -- (s2g4);
+\draw[thin, gray] (s2c2) -- (s2g5);
+\draw[thin, gray] (s2c2) -- (s2g6);
+
+% NN1PR ranking arrow (step 2)
+\draw[->, thick, >=Stealth] ($(s2g2.east)+(0.3,0)$) -- node[above, font=\scriptsize] {NN1PR ranking} ++(1.8,0);
+
+% Ranked results step 2
+\node[targetnode, minimum size=12pt, right=5.8cm of t2start] (t3) {};
+\node[orangenode, minimum size=10pt, above right=0.7cm and 0.4cm of t3, label={[font=\scriptsize]right:5}] (rr1) {};
+\node[greennode, minimum size=10pt, above right=0.2cm and 0.4cm of t3, label={[font=\scriptsize]right:2}] (rr2) {};
+\node[orangenode, minimum size=10pt, right=0.4cm of t3, label={[font=\scriptsize]right:3}] (rr3) {};
+\node[greennode, minimum size=10pt, below right=0.2cm and 0.4cm of t3, label={[font=\scriptsize]right:1}] (rr4) {};
+\node[orangenode, minimum size=10pt, below right=0.7cm and 0.4cm of t3, label={[font=\scriptsize]right:6}] (rr5) {};
+\node[greennode, minimum size=10pt, below right=1.2cm and 0.4cm of t3, label={[font=\scriptsize]right:4}] (rr6) {};
+\foreach \n in {rr1,rr2,rr3,rr4,rr5,rr6} { \draw[thin] (t3) -- (\n); }
+\node[font=\scriptsize, below=0.4cm of rr6] {Ranked candidates};
+
+% Dashed arrow to "reach preset"
+\draw[->, dashed, thick] ($(rr3.east)+(0.5,0)$) -- node[above, font=\scriptsize, text width=1.5cm, align=center] {Reach preset\\number of steps} ++(2,0);
+\end{tikzpicture}%
+}

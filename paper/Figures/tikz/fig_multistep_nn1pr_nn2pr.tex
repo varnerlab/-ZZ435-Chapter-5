@@ -1,0 +1,197 @@
+% Multistep pipeline with NN1PR + NN2PR (fig:multistep_pipeline)
+% Clear left-to-right staged flow: Target → Generate → Rank (NN1PR) → Expand → Rank (NN2PR) → Output
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[>=Stealth, node distance=0.4cm]
+
+% ============================================================
+% STAGE LABELS (top row)
+% ============================================================
+\node[rectangle, rounded corners=6pt, fill=targetblue!20, draw=targetblue!50,
+      minimum width=1.6cm, minimum height=0.7cm, font=\scriptsize\bfseries, align=center]
+      (L1) at (0, 0) {Target};
+\node[rectangle, rounded corners=6pt, fill=candidateorange!20, draw=candidateorange!50,
+      minimum width=1.6cm, minimum height=0.7cm, font=\scriptsize\bfseries, align=center]
+      (L2) at (3.0, 0) {1-Step\\Candidates};
+\node[rectangle, rounded corners=6pt, fill=boxblue, draw=hiddenblue!60,
+      minimum width=1.6cm, minimum height=0.7cm, font=\scriptsize\bfseries, align=center]
+      (L3) at (6.3, 0) {NN1PR\\Ranking};
+\node[rectangle, rounded corners=6pt, fill=candidateorange!20, draw=candidateorange!50,
+      minimum width=1.6cm, minimum height=0.7cm, font=\scriptsize\bfseries, align=center]
+      (L4) at (9.6, 0) {2-Step\\Candidates};
+\node[rectangle, rounded corners=6pt, fill=boxblue, draw=hiddenblue!60,
+      minimum width=1.6cm, minimum height=0.7cm, font=\scriptsize\bfseries, align=center]
+      (L5) at (12.9, 0) {NN2PR\\Ranking};
+\node[rectangle, rounded corners=6pt, fill=candidategreen!20, draw=candidategreen!60,
+      minimum width=1.6cm, minimum height=0.7cm, font=\scriptsize\bfseries, align=center]
+      (L6) at (16.2, 0) {Ranked\\Pathways};
+
+% Stage arrows
+\foreach \a/\b in {L1/L2, L2/L3, L3/L4, L4/L5, L5/L6} {
+    \draw[-{Stealth[length=5pt]}, line width=1.4pt, gray!50] (\a.east) -- (\b.west);
+}
+
+% ============================================================
+% STAGE 1: Target molecule
+% ============================================================
+\node[targetnode, minimum size=14pt] (T) at (0, -2.4) {};
+\node[font=\tiny, below=2pt of T] {target};
+
+% ============================================================
+% STAGE 2: Backward enumeration → 1-step candidate tree
+% ============================================================
+% Fan-out from target
+\node[orangenode, minimum size=10pt] (c1) at (2.4, -1.5) {};
+\node[orangenode, minimum size=10pt] (c2) at (2.4, -2.4) {};
+\node[orangenode, minimum size=10pt] (c3) at (2.4, -3.3) {};
+\draw[gray!55, thick] (T) -- (c1);
+\draw[gray!55, thick] (T) -- (c2);
+\draw[gray!55, thick] (T) -- (c3);
+
+% Second level from c1
+\node[greennode, minimum size=7pt] (c1a) at (3.5, -1.1) {};
+\node[cyannode, minimum size=7pt]  (c1b) at (3.5, -1.5) {};
+\node[purplenode, minimum size=7pt] (c1c) at (3.5, -1.9) {};
+\draw[gray!40] (c1) -- (c1a);
+\draw[gray!40] (c1) -- (c1b);
+\draw[gray!40] (c1) -- (c1c);
+
+% Second level from c3
+\node[cyannode, minimum size=7pt]   (c3a) at (3.5, -2.9) {};
+\node[greennode, minimum size=7pt]  (c3b) at (3.5, -3.3) {};
+\node[purplenode, minimum size=7pt] (c3c) at (3.5, -3.7) {};
+\draw[gray!40] (c3) -- (c3a);
+\draw[gray!40] (c3) -- (c3b);
+\draw[gray!40] (c3) -- (c3c);
+
+\node[font=\tiny, text=gray!70, align=center] at (2.95, -4.3) {backward\\enumeration};
+
+% ============================================================
+% ARROW: candidates → NN1PR
+% ============================================================
+\draw[-{Stealth[length=6pt]}, line width=1.6pt, gray!45] (4.1, -2.4) -- (5.0, -2.4);
+
+% ============================================================
+% STAGE 3: NN1PR ranking — pruned tree + ranked output
+% ============================================================
+\node[targetnode, minimum size=12pt] (T2) at (5.5, -2.4) {};
+
+% Ranked survivors
+\node[orangenode, minimum size=9pt] (r1) at (6.5, -1.5) {};
+\node[font=\tiny\bfseries, candidategreen!70!black, anchor=west] at (6.7, -1.5) {1};
+\node[orangenode, minimum size=9pt] (r2) at (6.5, -2.4) {};
+\node[font=\tiny\bfseries, candidategreen!70!black, anchor=west] at (6.7, -2.4) {2};
+\draw[gray!55, thick] (T2) -- (r1);
+\draw[gray!55, thick] (T2) -- (r2);
+
+% Pruned
+\node[orangenode, minimum size=9pt, opacity=0.25] (rx) at (6.5, -3.3) {};
+\draw[gray!20, dashed] (T2) -- (rx);
+\node[font=\tiny\bfseries, text=prunedred] at (rx) {X};
+
+\node[font=\tiny, text=gray!70, align=center] at (6.0, -4.3) {rank \&\\prune};
+
+% ============================================================
+% ARROW: ranked 1-step → 2-step expansion
+% ============================================================
+\draw[-{Stealth[length=6pt]}, line width=1.6pt, gray!45] (7.2, -2.4) -- (8.1, -2.4);
+
+% ============================================================
+% STAGE 4: 2-step candidate expansion (from top-ranked 1-step)
+% ============================================================
+\node[targetnode, minimum size=12pt] (T3) at (8.6, -2.4) {};
+
+% 1-step intermediates (kept from ranking)
+\node[orangenode, minimum size=9pt] (m1) at (9.5, -1.5) {};
+\node[orangenode, minimum size=9pt] (m2) at (9.5, -3.3) {};
+\draw[gray!55, thick] (T3) -- (m1);
+\draw[gray!55, thick] (T3) -- (m2);
+
+% 2-step children from m1
+\node[greennode, minimum size=7pt] (m1a) at (10.5, -1.1) {};
+\node[cyannode, minimum size=7pt]  (m1b) at (10.5, -1.5) {};
+\node[purplenode, minimum size=7pt] (m1c) at (10.5, -1.9) {};
+\draw[gray!40] (m1) -- (m1a);
+\draw[gray!40] (m1) -- (m1b);
+\draw[gray!40] (m1) -- (m1c);
+
+% 2-step children from m2
+\node[cyannode, minimum size=7pt]  (m2a) at (10.5, -2.9) {};
+\node[greennode, minimum size=7pt] (m2b) at (10.5, -3.3) {};
+\draw[gray!40] (m2) -- (m2a);
+\draw[gray!40] (m2) -- (m2b);
+
+\node[font=\tiny, text=gray!70, align=center] at (9.5, -4.3) {2\textsuperscript{nd}-step\\enumeration};
+
+% ============================================================
+% ARROW: 2-step candidates → NN2PR
+% ============================================================
+\draw[-{Stealth[length=6pt]}, line width=1.6pt, gray!45] (11.1, -2.4) -- (12.0, -2.4);
+
+% ============================================================
+% STAGE 5: NN2PR ranking — pruned 2-step tree
+% ============================================================
+\node[targetnode, minimum size=12pt] (T4) at (12.5, -2.4) {};
+
+% Intermediate step
+\node[orangenode, minimum size=9pt] (s1) at (13.3, -1.7) {};
+\node[orangenode, minimum size=9pt] (s2) at (13.3, -3.1) {};
+\draw[gray!55, thick] (T4) -- (s1);
+\draw[gray!55, thick] (T4) -- (s2);
+
+% Ranked 2-step endpoints
+\node[greennode, minimum size=8pt] (s1a) at (14.0, -1.3) {};
+\node[font=\tiny\bfseries, candidategreen!70!black, anchor=west] at (14.15, -1.3) {1};
+\draw[gray!45] (s1) -- (s1a);
+
+\node[greennode, minimum size=8pt] (s2a) at (14.0, -2.7) {};
+\node[font=\tiny\bfseries, candidategreen!70!black, anchor=west] at (14.15, -2.7) {2};
+\draw[gray!45] (s2) -- (s2a);
+
+% Pruned
+\node[cyannode, minimum size=7pt, opacity=0.25] (sx1) at (14.0, -1.9) {};
+\draw[gray!20, dashed] (s1) -- (sx1);
+\node[font=\tiny\bfseries, text=prunedred] at (sx1) {X};
+
+\node[cyannode, minimum size=7pt, opacity=0.25] (sx2) at (14.0, -3.5) {};
+\draw[gray!20, dashed] (s2) -- (sx2);
+\node[font=\tiny\bfseries, text=prunedred] at (sx2) {X};
+
+\node[font=\tiny, text=gray!70, align=center] at (13.2, -4.3) {rank \&\\prune};
+
+% ============================================================
+% ARROW: NN2PR → ranked output
+% ============================================================
+\draw[-{Stealth[length=6pt]}, line width=1.6pt, gray!45] (14.6, -2.4) -- (15.3, -2.4);
+
+% ============================================================
+% STAGE 6: Final ranked pathway list
+% ============================================================
+\node[anchor=north west, font=\scriptsize] at (15.4, -1.4) {%
+\begin{tabular}{@{}r@{\;}l@{}}
+\textbf{1.} & Pathway A \\[3pt]
+\textbf{2.} & Pathway B \\[3pt]
+\textcolor{gray!45}{\textbf{3.}} & \textcolor{gray!45}{Pathway C} \\[2pt]
+& \textcolor{gray!45}{$\vdots$}
+\end{tabular}};
+
+% ============================================================
+% LEGEND
+% ============================================================
+\node at (8.2, -5.3) {%
+\begin{tikzpicture}[baseline=-0.5ex]
+    \node[circle, fill=targetblue, minimum size=7pt, inner sep=0pt] at (0,0) {};
+    \node[font=\scriptsize, anchor=west] at (0.18,0) {target};
+    \node[circle, fill=candidateorange, minimum size=7pt, inner sep=0pt] at (1.5,0) {};
+    \node[font=\scriptsize, anchor=west] at (1.68,0) {generated};
+    \node[circle, fill=candidategreen, minimum size=7pt, inner sep=0pt] at (3.4,0) {};
+    \node[font=\scriptsize, anchor=west] at (3.58,0) {selected};
+    \node[circle, fill=candidatecyan, minimum size=7pt, inner sep=0pt] at (5.0,0) {};
+    \node[font=\scriptsize, anchor=west] at (5.18,0) {intermediate};
+    \node[circle, fill=candidatepurple, minimum size=7pt, inner sep=0pt] at (7.1,0) {};
+    \node[font=\scriptsize, anchor=west] at (7.28,0) {available};
+    \node[font=\scriptsize\bfseries, text=prunedred] at (9.0,0) {X};
+    \node[font=\scriptsize, anchor=west] at (9.2,0) {pruned};
+\end{tikzpicture}};
+
+\end{tikzpicture}%
+}

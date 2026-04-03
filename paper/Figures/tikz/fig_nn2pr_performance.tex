@@ -1,0 +1,24 @@
+% NN2PR vs NN1PR performance bar chart (fig:nn2pr_performance)
+\begin{tikzpicture}
+\begin{axis}[
+    ybar,
+    bar width=12pt,
+    width=\textwidth,
+    height=7cm,
+    ylabel={Coverage (\%)},
+    xlabel={Rank},
+    symbolic x coords={1,5,10,30,50,100},
+    xtick=data,
+    ymin=0, ymax=100,
+    legend style={at={(0.05,0.95)}, anchor=north west, font=\small},
+    nodes near coords,
+    every node near coord/.append style={font=\scriptsize},
+    enlarge x limits=0.12,
+    grid=major,
+    grid style={gray!20},
+]
+\addplot[fill=barblue, draw=barblue!80!black] coordinates {(1,21) (5,57) (10,67) (30,81) (50,87) (100,89)};
+\addplot[fill=barorange, draw=barorange!80!black] coordinates {(1,18) (5,32) (10,41) (30,56) (50,67) (100,77)};
+\legend{NN2PR, NN1PR}
+\end{axis}
+\end{tikzpicture}

@@ -1,0 +1,60 @@
+% NN2PR architecture schematic (fig:nn2pr_struc)
+\begin{tikzpicture}[node distance=0.6cm]
+\node[font=\small\bfseries] (title) {Neural Network-based 2-step Pathway Ranking (NN2PR)};
+
+\node[draw, rounded corners, minimum width=2.8cm, minimum height=0.6cm, font=\small, below=0.6cm of title, xshift=-4.5cm] (target) {Target molecule};
+\node[font=\footnotesize, below=0.15cm of target] (tfp) {ECFP (512-bit)};
+
+\node[draw, rounded corners, minimum width=2.8cm, minimum height=0.6cm, font=\small, below=0.6cm of tfp] (prec1) {1\textsuperscript{st} step precursor};
+\node[font=\footnotesize, below=0.15cm of prec1] (p1fp) {ECFP (512-bit)};
+
+\node[draw, rounded corners, minimum width=2.8cm, minimum height=0.6cm, font=\small, below=0.6cm of p1fp] (prec2) {2\textsuperscript{nd} step precursor};
+\node[font=\footnotesize, below=0.15cm of prec2] (p2fp) {ECFP (512-bit)};
+
+% Neural network box
+\node[draw, rounded corners, minimum width=3cm, minimum height=4.5cm, right=2.5cm of prec1, yshift=-0.3cm, font=\small\bfseries, label={[font=\small\bfseries]above:Neural Network}] (nnbox) {};
+
+% Neurons - input layer
+\foreach \i in {1,2,3,4} {
+    \node[neuron] at ($(nnbox.west)+(0.6, 1.8-0.9*\i)$) (in\i) {};
+}
+% Hidden layer 1
+\foreach \i in {1,2,3,4,5} {
+    \node[neuron, fill=candidateorange!50] at ($(nnbox.center)+(-0.2, 2.2-0.9*\i)$) (h1\i) {};
+}
+% Hidden layer 2
+\foreach \i in {1,2,3} {
+    \node[neuron, fill=candidateorange!50] at ($(nnbox.center)+(1.0, 1.3-0.9*\i)$) (h2\i) {};
+}
+% Output
+\node[neuron, fill=candidateorange!70] at ($(nnbox.east)+(-0.4, -0.3)$) (out) {};
+
+% Connections (sparse for clarity)
+\foreach \i in {1,2,3,4} {
+    \foreach \j in {1,2,3,4,5} {
+        \draw[gray!30, very thin] (in\i) -- (h1\j);
+    }
+}
+\foreach \i in {1,2,3,4,5} {
+    \foreach \j in {1,2,3} {
+        \draw[gray!30, very thin] (h1\i) -- (h2\j);
+    }
+}
+\foreach \j in {1,2,3} {
+    \draw[gray!50, thin] (h2\j) -- (out);
+}
+
+\node[font=\tiny, above=0.05cm of in1] {Input};
+\node[font=\tiny, above=0.05cm of h11] {Hidden};
+\node[font=\tiny, above right=0.05cm and -0.15cm of out] {\tiny Out};
+
+% Arrows from inputs to NN
+\draw[thinnarrow] (tfp.east) -- ($(nnbox.west)+(0,0.9)$);
+\draw[thinnarrow] (p1fp.east) -- ($(nnbox.west)+(0,0)$);
+\draw[thinnarrow] (p2fp.east) -- ($(nnbox.west)+(0,-0.9)$);
+
+% Output box
+\node[draw, rounded corners, minimum width=2.8cm, minimum height=1.8cm, right=1.5cm of nnbox, font=\small, align=center, text width=2.5cm] (output) {\textbf{Output}\\[3pt] A score $\in [0,1]$\\quantifying the\\plausibility of this\\2-step pathway};
+
+\draw[thickarrow={gray!60}, line width=1pt] (nnbox.east) -- (output.west);
+\end{tikzpicture}

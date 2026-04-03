@@ -1,0 +1,46 @@
+% TikZ/pgfplots preamble for chapter5 figures
+\usepackage{tikz}
+\usepackage{pgfplots}
+\pgfplotsset{compat=1.18}
+
+\usetikzlibrary{arrows.meta, positioning, calc, fit, backgrounds, shapes.geometric, decorations.markings}
+
+% --- Color palette ---
+\definecolor{targetblue}{RGB}{70,130,180}      % steel blue for target nodes
+\definecolor{candidateorange}{RGB}{255,165,80}  % orange for generated candidates
+\definecolor{candidategreen}{RGB}{100,200,100}  % green for ranked/selected candidates
+\definecolor{candidatecyan}{RGB}{120,220,220}   % cyan for intermediate nodes
+\definecolor{candidatepurple}{RGB}{150,100,180} % purple for available compounds
+\definecolor{prunedred}{RGB}{210,50,50}         % red for pruned/rejected
+\definecolor{inputgreen}{RGB}{140,198,63}       % green for input layer
+\definecolor{hiddenblue}{RGB}{50,180,220}       % cyan-blue for hidden layers
+\definecolor{dropoutblue}{RGB}{80,160,210}      % slightly darker for dropout
+\definecolor{outputpurple}{RGB}{140,80,200}     % purple for output layer
+\definecolor{boxorange}{RGB}{255,228,196}       % light orange background
+\definecolor{boxblue}{RGB}{220,230,245}         % light blue background
+\definecolor{barblue}{RGB}{31,119,180}          % matplotlib default blue
+\definecolor{barorange}{RGB}{255,127,14}        % matplotlib default orange
+
+% --- Node styles ---
+\tikzset{
+    % Circular nodes for pathway diagrams
+    targetnode/.style={circle, fill=targetblue, minimum size=10pt, inner sep=0pt},
+    orangenode/.style={circle, fill=candidateorange, minimum size=10pt, inner sep=0pt},
+    greennode/.style={circle, fill=candidategreen, minimum size=10pt, inner sep=0pt},
+    cyannode/.style={circle, fill=candidatecyan, minimum size=10pt, inner sep=0pt},
+    purplenode/.style={circle, fill=candidatepurple, minimum size=10pt, inner sep=0pt},
+    % NN neuron style
+    neuron/.style={circle, fill=candidateorange!30, draw=candidateorange!60, minimum size=12pt, inner sep=0pt},
+    % Layer blocks for architecture diagrams
+    inputlayer/.style={rectangle, rounded corners=3pt, fill=inputgreen, draw=inputgreen!70!black, minimum width=3.2cm, minimum height=0.7cm, font=\small, align=center},
+    hiddenlayer/.style={rectangle, rounded corners=3pt, fill=hiddenblue, draw=hiddenblue!70!black, minimum width=3.2cm, minimum height=0.7cm, font=\small, align=center},
+    dropoutlayer/.style={rectangle, rounded corners=3pt, fill=hiddenblue!70, draw=hiddenblue!50!black, minimum width=3.2cm, minimum height=0.7cm, font=\small, align=center},
+    outputlayer/.style={rectangle, rounded corners=3pt, fill=outputpurple, draw=outputpurple!70!black, minimum width=3.2cm, minimum height=0.7cm, font=\small, align=center, text=white},
+    % Workflow boxes
+    workflowbox/.style={rectangle, rounded corners=6pt, minimum width=2.5cm, minimum height=1cm, font=\small\bfseries, align=center, text width=2.2cm},
+    % Arrow styles
+    thickarrow/.style={-{Stealth[length=8pt, width=6pt]}, line width=1.5pt, color=#1},
+    thickarrow/.default=targetblue!80!black,
+    thinnarrow/.style={-{Stealth[length=5pt, width=4pt]}, line width=0.8pt},
+    downarrow/.style={-{Stealth[length=5pt, width=4pt]}, line width=1.2pt, color=gray!70},
+}

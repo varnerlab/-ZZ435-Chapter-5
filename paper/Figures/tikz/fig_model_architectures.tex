@@ -1,0 +1,92 @@
+% Combined NN1PR/NN2PR architecture diagram (fig:model_architectures)
+% Side-by-side layout for NeurIPS column width
+\resizebox{\textwidth}{!}{%
+\begin{tikzpicture}[node distance=0.35cm, >=Stealth]
+
+% ============================================================
+% Panel (a): NN1PR — left side
+% ============================================================
+\node[font=\small\bfseries] (title1) at (0, 0) {(a) NN1PR};
+
+% Input fingerprints
+\node[rectangle, rounded corners=3pt, fill=boxorange, draw=candidateorange!70,
+      minimum width=2.0cm, minimum height=0.55cm, font=\scriptsize, align=center,
+      below=0.35cm of title1, xshift=-1.0cm] (tgt1) {Target ECFP\\(512-bit)};
+\node[rectangle, rounded corners=3pt, fill=boxorange, draw=candidateorange!70,
+      minimum width=2.0cm, minimum height=0.55cm, font=\scriptsize, align=center,
+      below=0.25cm of tgt1] (pre1) {Precursor ECFP\\(512-bit)};
+
+% Concat node
+\node[circle, fill=gray!20, draw=gray!60, minimum size=16pt, font=\tiny\bfseries,
+      right=0.55cm of tgt1, yshift=-0.45cm] (cat1) {$\oplus$};
+\draw[thinnarrow] (tgt1.east) -| (cat1);
+\draw[thinnarrow] (pre1.east) -| (cat1);
+
+% Layer stack
+\node[inputlayer, right=0.45cm of cat1, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (in1) {Input: 1024};
+\node[hiddenlayer, below=0.3cm of in1, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (h1) {Dense 256, ReLU};
+\node[dropoutlayer, below=0.3cm of h1, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (d1) {Dropout 0.5};
+\node[outputlayer, below=0.3cm of d1, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (o1) {Dense 1, Sigmoid};
+
+\draw[thinnarrow] (cat1) -- (in1.west);
+\draw[downarrow] (in1.south) -- (h1.north);
+\draw[downarrow] (h1.south) -- (d1.north);
+\draw[downarrow] (d1.south) -- (o1.north);
+
+% Output
+\node[rectangle, rounded corners=3pt, fill=candidategreen!20, draw=candidategreen!70,
+      minimum width=1.5cm, minimum height=0.45cm, font=\scriptsize, align=center,
+      below=0.3cm of o1] (score1) {Score $\in [0,1]$};
+\draw[downarrow] (o1.south) -- (score1.north);
+
+% ============================================================
+% Panel (b): NN2PR — right side
+% ============================================================
+\node[font=\small\bfseries] (title2) at (9.2, 0) {(b) NN2PR};
+
+% Input fingerprints
+\node[rectangle, rounded corners=3pt, fill=boxorange, draw=candidateorange!70,
+      minimum width=2.0cm, minimum height=0.55cm, font=\scriptsize, align=center,
+      below=0.35cm of title2, xshift=-1.0cm] (tgt2) {Target ECFP\\(512-bit)};
+\node[rectangle, rounded corners=3pt, fill=boxorange, draw=candidateorange!70,
+      minimum width=2.0cm, minimum height=0.55cm, font=\scriptsize, align=center,
+      below=0.2cm of tgt2] (pre2a) {1\textsuperscript{st} Precursor ECFP\\(512-bit)};
+\node[rectangle, rounded corners=3pt, fill=boxorange, draw=candidateorange!70,
+      minimum width=2.0cm, minimum height=0.55cm, font=\scriptsize, align=center,
+      below=0.2cm of pre2a] (pre2b) {2\textsuperscript{nd} Precursor ECFP\\(512-bit)};
+
+% Concat node
+\node[circle, fill=gray!20, draw=gray!60, minimum size=16pt, font=\tiny\bfseries,
+      right=0.55cm of pre2a] (cat2) {$\oplus$};
+\draw[thinnarrow] (tgt2.east) -| (cat2);
+\draw[thinnarrow] (pre2a.east) -- (cat2.west);
+\draw[thinnarrow] (pre2b.east) -| (cat2);
+
+% Layer stack
+\node[inputlayer, right=0.45cm of cat2, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (in2) {Input: 1536};
+\node[hiddenlayer, below=0.28cm of in2, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (h2a) {Dense 512, ReLU};
+\node[dropoutlayer, below=0.28cm of h2a, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (d2a) {Dropout 0.3};
+\node[hiddenlayer, below=0.28cm of d2a, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (h2b) {Dense 128, ReLU};
+\node[dropoutlayer, below=0.28cm of h2b, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (d2b) {Dropout 0.2};
+\node[outputlayer, below=0.28cm of d2b, minimum width=2.4cm, minimum height=0.55cm, font=\scriptsize] (o2) {Dense 1, Sigmoid};
+
+\draw[thinnarrow] (cat2) -- (in2.west);
+\draw[downarrow] (in2.south) -- (h2a.north);
+\draw[downarrow] (h2a.south) -- (d2a.north);
+\draw[downarrow] (d2a.south) -- (h2b.north);
+\draw[downarrow] (h2b.south) -- (d2b.north);
+\draw[downarrow] (d2b.south) -- (o2.north);
+
+% Output
+\node[rectangle, rounded corners=3pt, fill=candidategreen!20, draw=candidategreen!70,
+      minimum width=1.5cm, minimum height=0.45cm, font=\scriptsize, align=center,
+      below=0.3cm of o2] (score2) {Score $\in [0,1]$};
+\draw[downarrow] (o2.south) -- (score2.north);
+
+% ============================================================
+% Separator line
+% ============================================================
+\draw[gray!30, dashed] (5.8, 0.3) -- (5.8, -5.5);
+
+\end{tikzpicture}%
+}

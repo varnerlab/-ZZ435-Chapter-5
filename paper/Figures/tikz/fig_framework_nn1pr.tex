@@ -1,0 +1,100 @@
+% One-step retrosynthesis framework with NN1PR (fig:framework_NN1PR)
+\begin{tikzpicture}[node distance=0.4cm, >=Stealth]
+% Backward Enumeration box
+\begin{scope}[local bounding box=enumbox]
+    % Target node
+    \node[targetnode, label={[font=\footnotesize]below:Target}] (T) {};
+
+    % Candidate pairs
+    \node[right=2.5cm of T, yshift=1.2cm] (pair1) {};
+    \node[targetnode] at (pair1) (T1) {};
+    \node[greennode, right=0.4cm of T1, label={[font=\scriptsize]right:$R_1$}] (R1) {};
+    \draw (T1) -- (R1);
+
+    \node[right=2.5cm of T, yshift=0.4cm] (pair2) {};
+    \node[targetnode] at (pair2) (T2) {};
+    \node[candidateorange, circle, fill=candidateorange, minimum size=10pt, inner sep=0pt, right=0.4cm of T2, label={[font=\scriptsize]right:$R_i$}] (Ri) {};
+    \draw (T2) -- (Ri);
+
+    \node[right=2.5cm of T, yshift=-0.4cm] (pair3) {};
+    \node[targetnode] at (pair3) (T3) {};
+    \node[circle, fill=yellow!70!orange, minimum size=10pt, inner sep=0pt, right=0.4cm of T3, label={[font=\scriptsize]right:$R_j$}] (Rj) {};
+    \draw (T3) -- (Rj);
+
+    \node[right=2.5cm of T, yshift=-1.2cm] (pair4) {};
+    \node[targetnode] at (pair4) (T4) {};
+    \node[purplenode, right=0.4cm of T4, label={[font=\scriptsize]right:$R_n$}] (Rn) {};
+    \draw (T4) -- (Rn);
+
+    % Vdots
+    \node at ($(pair1)!0.5!(pair2)$) {$\vdots$};
+    \node at ($(pair2)!0.5!(pair3)$) {$\vdots$};
+    \node at ($(pair3)!0.5!(pair4)$) {$\vdots$};
+\end{scope}
+
+% Arrow from target to candidates
+\draw[thickarrow, line width=2pt] ($(T.east)+(0.1,0)$) -- node[above, font=\scriptsize, text width=1.5cm, align=center] {Apply $n$ backward\\reaction templates} ($(T1.west)+(-0.8,0)$);
+
+% Labels
+\node[font=\footnotesize\bfseries, above=0.2cm of T1] {Reaction Candidates};
+\node[font=\footnotesize\bfseries, below=0.5cm of T4, xshift=0.2cm] {Backward Enumeration};
+
+% Fit box around enumeration
+\begin{pgfonlayer}{background}
+    \node[draw=candidateorange, rounded corners=8pt, fill=boxorange, inner sep=8pt, fit=(T)(R1)(Rn)(T4), opacity=0.3] {};
+\end{pgfonlayer}
+
+% NN1PR box in center
+\node[draw, rounded corners, minimum width=1.8cm, minimum height=2.5cm, right=1.8cm of Ri, font=\small\bfseries, label={[font=\small\bfseries]above:NN1PR}] (nn) {};
+% Mini neurons
+\foreach \i in {1,2,3} {
+    \node[neuron, minimum size=6pt] at ($(nn.west)+(0.35, 0.6-0.5*\i)$) (ni\i) {};
+}
+\foreach \i in {1,2,3} {
+    \node[neuron, minimum size=6pt, fill=candidateorange!50] at ($(nn.east)+(-0.35, 0.6-0.5*\i)$) (no\i) {};
+}
+\foreach \i in {1,2,3} {
+    \foreach \j in {1,2,3} {
+        \draw[gray!40, very thin] (ni\i) -- (no\j);
+    }
+}
+
+% Arrow to NN
+\draw[thickarrow, line width=2pt] ($(Ri.east)+(0.6,0)$) -- (nn.west);
+
+% Ranked candidates
+\node[right=1.8cm of nn, yshift=1.2cm] (rpair1) {};
+\node[targetnode] at (rpair1) (RT1) {};
+\node[circle, fill=yellow!70!orange, minimum size=10pt, inner sep=0pt, right=0.4cm of RT1, label={[font=\scriptsize]right:$R_j$}] (RRj) {};
+\draw (RT1) -- (RRj);
+
+\node[right=1.8cm of nn, yshift=0.4cm] (rpair2) {};
+\node[targetnode] at (rpair2) (RT2) {};
+\node[purplenode, right=0.4cm of RT2, label={[font=\scriptsize]right:$R_n$}] (RRn) {};
+\draw (RT2) -- (RRn);
+
+\node[right=1.8cm of nn, yshift=-0.4cm] (rpair3) {};
+\node[targetnode] at (rpair3) (RT3) {};
+\node[greennode, right=0.4cm of RT3, label={[font=\scriptsize]right:$R_1$}] (RR1) {};
+\draw (RT3) -- (RR1);
+
+\node[right=1.8cm of nn, yshift=-1.2cm] (rpair4) {};
+\node[targetnode] at (rpair4) (RT4) {};
+\node[circle, fill=candidateorange, minimum size=10pt, inner sep=0pt, right=0.4cm of RT4, label={[font=\scriptsize]right:$R_i$}] (RRi) {};
+\draw (RT4) -- (RRi);
+
+\node at ($(rpair1)!0.5!(rpair2)$) {$\vdots$};
+\node at ($(rpair2)!0.5!(rpair3)$) {$\vdots$};
+\node at ($(rpair3)!0.5!(rpair4)$) {$\vdots$};
+
+\node[font=\footnotesize\bfseries, above=0.2cm of RT1] {Ranked Candidates};
+\node[font=\footnotesize\bfseries, below=0.5cm of RT4, xshift=0.2cm] {Candidate Ranking};
+
+% Arrow from NN to ranked
+\draw[thickarrow, line width=2pt] (nn.east) -- ($(RT2.west)+(-0.5,0)$);
+
+% Fit box around ranking
+\begin{pgfonlayer}{background}
+    \node[draw=targetblue!50, rounded corners=8pt, fill=boxblue, inner sep=8pt, fit=(nn)(RRj)(RRi)(RT4), opacity=0.3] {};
+\end{pgfonlayer}
+\end{tikzpicture}

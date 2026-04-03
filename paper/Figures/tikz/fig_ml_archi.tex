@@ -1,0 +1,28 @@
+% Combined NN1PR/NN2PR architecture diagram (fig:ml_archi)
+\begin{tikzpicture}[node distance=0.55cm]
+% --- NN1PR (Left) ---
+\node[font=\small\bfseries] (title1) {NN1PR};
+\node[inputlayer, below=0.4cm of title1] (in1) {Input ECFP4: 1024};
+\node[hiddenlayer, below=0.5cm of in1] (h1) {Dense: 256, ReLU};
+\node[dropoutlayer, below=0.5cm of h1] (d1) {Dropout: 0.5};
+\node[outputlayer, below=0.5cm of d1] (o1) {Dense: 1, sigmoid};
+
+\draw[downarrow] (in1.south) -- (h1.north);
+\draw[downarrow] (h1.south) -- (d1.north);
+\draw[downarrow] (d1.south) -- (o1.north);
+
+% --- NN2PR (Right) ---
+\node[font=\small\bfseries, right=3cm of title1] (title2) {NN2PR};
+\node[inputlayer, below=0.4cm of title2] (in2) {Input ECFP4: 1536};
+\node[hiddenlayer, below=0.5cm of in2] (h2a) {Dense: 512, ReLU};
+\node[dropoutlayer, below=0.5cm of h2a] (d2a) {Dropout: 0.3};
+\node[hiddenlayer, below=0.5cm of d2a] (h2b) {Dense: 128, ReLU};
+\node[dropoutlayer, below=0.5cm of h2b] (d2b) {Dropout: 0.2};
+\node[outputlayer, below=0.5cm of d2b] (o2) {Dense: 1, sigmoid};
+
+\draw[downarrow] (in2.south) -- (h2a.north);
+\draw[downarrow] (h2a.south) -- (d2a.north);
+\draw[downarrow] (d2a.south) -- (h2b.north);
+\draw[downarrow] (h2b.south) -- (d2b.north);
+\draw[downarrow] (d2b.south) -- (o2.north);
+\end{tikzpicture}
