@@ -1,12 +1,12 @@
 # Build artifacts
-*.aux
-*.bbl
-*.blg
-*.log
-*.out
-*.synctex.gz
-*.pdf
-_minted-*/
+paper/*.aux
+paper/*.bbl
+paper/*.blg
+paper/*.log
+paper/*.out
+paper/*.synctex.gz
+paper/*.pdf
+paper/_minted-*/
 
 # Standalone wrappers
 paper/Figures/tikz/standalone_*
