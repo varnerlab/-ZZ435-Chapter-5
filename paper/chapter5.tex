@@ -204,10 +204,10 @@ multistep retrobiosynthesis pipeline and validated it by reproducing some natura
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 \subsection{Dataset assembly}
-The backward reaction templates and metabolic reactions were assembled from literature \citep{henry2010discovery, retrorules, duigou2019retrorules} and public databases \citep{kegg, EPFL_ATLAS, hadadi2016atlas}. 
+The backward reaction templates and metabolic reactions were assembled from literature \citep{henry2010discovery, duigou2019retrorules} and public databases \citep{kanehisa2016kegg, EPFL_ATLAS, hadadi2016atlas}. 
 
-\textbf{Metabolic reaction dataset.} KEGG (Kyoto Encyclopedia of Genes and Genomes) is a computerized resource for understanding high-level functions and utilities of the biological system \citep{kegg, kanehisa1996toward, kanehisa1997database, ogata1999kegg, kanehisa2000kegg, kanehisa2002kegg, kanehisa2004kegg, kanehisa2006genomics, kanehisa2007kegg, kanehisa2010kegg, kanehisa2012kegg, kanehisa2019toward, kanehisa2019new, kanehisa2017kegg, kanehisa2014data, kanehisa2016kegg}
-It is a collection of databases dealing with many aspects of information in biology, including biological pathways and chemical substances \citep{kegg, wiki:kegg}. 
+\textbf{Metabolic reaction dataset.} KEGG (Kyoto Encyclopedia of Genes and Genomes) is a computerized resource for understanding high-level functions and utilities of the biological system \citep{kanehisa2016kegg, kanehisa1996toward, kanehisa1997database, ogata1999kegg, kanehisa2000kegg, kanehisa2002kegg, kanehisa2004kegg, kanehisa2006genomics, kanehisa2007kegg, kanehisa2010kegg, kanehisa2012kegg, kanehisa2019toward, kanehisa2019new, kanehisa2017kegg, kanehisa2014data, kanehisa2016kegg}
+It is a collection of databases dealing with many aspects of information in biology, including biological pathways and chemical substances \citep{kanehisa2016kegg}. 
 % Hadadi et al. created a curated KEGG reactions dataset based on KEGG 2015 and made it publicly available on EPFL's website \citep{hadadi2016atlas, EPFL_ATLAS}. 
 % In this work, we used this EPFL ATLAS dataset as our metabolic reactions dataset. 
 We assembled 11475 reactions from KEGG Reaction Database and 323 pathways from KEGG Module Database. 
@@ -220,7 +220,7 @@ A better way to resolve dataset issue is to assemble more data directly from var
 \textbf{Backward reaction templates dataset.}
 Building a pipeline for reaction template extraction was not a trivial job, so instead in this work, we decided to assemble a backward reaction templates dataset from literature. 
 Faulon group published multiple sets of reaction rules based on metabolic reaction database MetaNetX v3.0 \citep{duigou2019retrorules, metanetx, moretti2016metanetx, ganter2013metanetx, bernard2014reconciliation}. 
-We used their reaction rules dataset that handles hydrogen explicit, and with a template diameter from 2 to 16 \citep{retrorules}.
+We used their reaction rules dataset that handles hydrogen explicit, and with a template diameter from 2 to 16 \citep{duigou2019retrorules}.
 The dataset had 350224 templates, including both forward and backward ones. 
 Among them, there were 234268 backward templates, which would be referred to as 'RetroRule' rule set.  
 We also obtained a dataset that was used in Henry et al.\ \citep{henry2010discovery} that consisted of 116 backward rules, referred to as the `BNICE' rule set in this paper. 
@@ -370,7 +370,7 @@ This comparison showed the framework scaled well with larger template sets.
 %-----------------------------------------------
 
 We also applied the one-step framework to a natural pathway by reproducing glycolysis.
-Given pyruvate as the target for biosynthesis, we applied the framework with the BNICE and Retro rule sets \citep{retrorules} and found the desired precursor phosphoenolpyruvate with EC $2.7.1.40$, as reported in KEGG, at rank 65 out of 1500 candidates (Fig.~\ref{fig:pyruvate_pathway}).
+Given pyruvate as the target for biosynthesis, we applied the framework with the BNICE and Retro rule sets \citep{duigou2019retrorules} and found the desired precursor phosphoenolpyruvate with EC $2.7.1.40$, as reported in KEGG, at rank 65 out of 1500 candidates (Fig.~\ref{fig:pyruvate_pathway}).
 The network expansion went on repeatedly for another 8 times to completely reproduce the well-known glycolysis pathway. 
 For 7 steps in this reproduction, the recorded ECs in KEGG were included in the best ranked candidates found by the pipeline. 
 While for the other two steps (fructose 1,6-bisphosphate to fructose 6-phosphate and glucose 6-phosphate to glucose), the recorded ECs were included in other alternative candidates.  
@@ -507,9 +507,9 @@ We also acknowledge the financial support to J.V. and P.Z. from the departmental
 Representing molecules in a computer-understandable format is the first step towards manipulating molecules computationally. 
 Line notation has been studied for several decades as a way of chemical nomenclature that can be processed with relative ease by computer but is also relatively understandable by human beings compared to other formats like connection table blocks \citep{panico1993guide, wiswesser1954line, dalby1992description}. 
 Based on principles of molecular graph theory, David Weininger and colleagues in 1980s proposed SMILES (Simplified Molecular Input Line Entry System) as a chemical notation for modern chemical information processing \citep{weininger1988smiles, weininger1989smiles}.   
-With further developments over the past several decades, mainly by Daylight Chemical Information Systems, SMILES is now widely supported by many applications as standard input and/or output formats \citep{weininger1990smiles, steinbeck2003chemistry, o2011open, daylightsmiles}. An open standard called OpenSMILES was published in the open-source chemistry community in 2007 to further support the use of SMILES \citep{opensmiles, wiki:smiles}.
+With further developments over the past several decades, mainly by Daylight Chemical Information Systems, SMILES is now widely supported by many applications as standard input and/or output formats \citep{weininger1990smiles, steinbeck2003chemistry, o2011open, daylightsmiles}. An open standard called OpenSMILES was published in the open-source chemistry community in 2007 to further support the use of SMILES \citep{opensmiles, weininger1988smiles}.
 
-A SMILES string is read from left to right to generate atoms and bonds of a molecule. Some basic specification rules in SMILES that are important to retrosynthesis in metabolic pathway design include \citep{wiki:smiles, daylightsmiles}: 
+A SMILES string is read from left to right to generate atoms and bonds of a molecule. Some basic specification rules in SMILES that are important to retrosynthesis in metabolic pathway design include \citep{weininger1988smiles, daylightsmiles}: 
 \begin{itemize}
     \item Atoms: representing chemical elements, such as C, N, O, P, S. 
     \item Bonds: single bond as $'-'$, double bond as $'='$, triple bond as $'\#'$, aromatic bond as $':'$.
@@ -533,7 +533,7 @@ Some limitations of SMILES stem from the approximation of molecules as static gr
 In this work, SMILES was chosen as the molecular representation because of the support by many excellent software packages, especially RDKit which will be introduced later \citep{rdkit}.
 
 
-\textbf{SMARTS and reaction templates.} SMILES arbitrary target specification (SMARTS) is a language for specifying substructural patterns using rules that are straightforward extensions of SMILES. Almost all SMILES specifications are valid SMARTS targets \citep{daylightsmarts, wiki:smarts}.  
+\textbf{SMARTS and reaction templates.} SMILES arbitrary target specification (SMARTS) is a language for specifying substructural patterns using rules that are straightforward extensions of SMILES. Almost all SMILES specifications are valid SMARTS targets \citep{daylightsmarts}.  
 Two distinctive features of SMARTS are the supports of specifying atomic properties - such as atom-atom mapping (AAM) - and logical operators for combing atom and bond descriptors. 
 %-----------------------------------------------
 \begin{figure}
@@ -573,7 +573,7 @@ Four AAMs are specified in the $n=0$ backward template (Fig.~\ref{fig:template_e
 \textbf{Computational tools.}
 All scripts were written in Python. 
 RDKit was used for molecule/reaction manipulation and various cheminformatics calculations \citep{rdkit}. 
-Keras \citep{Keras, geron2019hands} using the Tensorflow 2 \citep{TensorFlow, abadi2016tensorflow} backend was used for building the machine learning architecture. 
+Keras \citep{geron2019hands} using the Tensorflow 2 \citep{abadi2016tensorflow} backend was used for building the machine learning architecture. 
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
